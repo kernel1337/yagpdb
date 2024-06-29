@@ -69,7 +69,7 @@ func (p *Plugin) InitWeb() {
 
 	// All handlers here require guild channels present
 	muxer.Use(web.RequireBotMemberMW)
-	muxer.Use(web.RequirePermMW(discordgo.PermissionManageRoles, discordgo.PermissionKickMembers, discordgo.PermissionBanMembers, discordgo.PermissionManageMessages, discordgo.PermissionManageServer, discordgo.PermissionModerateMembers))
+	muxer.Use(web.RequirePermMW(discordgo.PermissionManageRoles, discordgo.PermissionKickMembers, discordgo.PermissionBanMembers, discordgo.PermissionManageMessages, discordgo.PermissionManageGuild, discordgo.PermissionModerateMembers))
 
 	getIndexHandler := web.ControllerHandler(p.handleGetAutomodIndex, "automod_index")
 
@@ -506,8 +506,8 @@ func (p *Plugin) handlePostAutomodUpdateRule(w http.ResponseWriter, r *http.Requ
 		}
 	}
 	if anyMute {
-		conf, err := moderation.GetConfig(g.ID)
-		if err != nil || conf.MuteRole == "" {
+		conf, err := moderation.GetConfigOrDefault(g.ID)
+		if err != nil || conf.MuteRole == 0 {
 			tx.Rollback()
 			tmpl.AddAlerts(web.ErrorAlert("No mute role set, please configure one."))
 			return tmpl, nil
