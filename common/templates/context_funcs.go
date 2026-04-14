@@ -30,7 +30,11 @@ var (
 )
 
 func (c *Context) parseMessageInput(msg interface{}) (*discordgo.MessageSend, error) {
-	msgSend := &discordgo.MessageSend{}
+	msgSend := &discordgo.MessageSend{
+		AllowedMentions: discordgo.AllowedMentions{
+			Parse: []discordgo.AllowedMentionType{discordgo.AllowedMentionTypeUsers},
+		},
+	}
 	var err error
 
 	switch typedMsg := msg.(type) {
@@ -51,12 +55,6 @@ func (c *Context) parseMessageInput(msg interface{}) (*discordgo.MessageSend, er
 		}
 	default:
 		msgSend.Content = ToString(msg)
-	}
-
-	if msgSend.AllowedMentions.Parse == nil {
-		msgSend.AllowedMentions = discordgo.AllowedMentions{
-			Parse: []discordgo.AllowedMentionType{discordgo.AllowedMentionTypeUsers},
-		}
 	}
 
 	if msgSend.Flags&discordgo.MessageFlagsIsComponentsV2 == 0 && strings.TrimSpace(msgSend.Content) == "" {
