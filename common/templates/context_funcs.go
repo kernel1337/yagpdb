@@ -387,10 +387,8 @@ func (c *Context) tmplSendMessage(filterSpecialMentions bool, returnID bool) fun
 			return "", err
 		}
 
-		if cast, ok := msg.(*discordgo.MessageSend); ok {
-			if cast.Reference != nil && cast.Reference.ChannelID == 0 {
-				cast.Reference.ChannelID = cid
-			}
+		if msgSend.Reference != nil && msgSend.Reference.ChannelID == 0 {
+			msgSend.Reference.ChannelID = cid
 		}
 
 		if sendType == sendMessageDM {
