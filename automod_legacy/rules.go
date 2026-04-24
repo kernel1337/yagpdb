@@ -206,6 +206,7 @@ type cachedGuildInvites struct {
 }
 
 func (c *cachedGuildInvites) gc(d time.Duration) {
+	logger.Info("Init worker for invite cache GC")
 	ticker := time.NewTicker(d)
 	for range ticker.C {
 		c.tick(d)
