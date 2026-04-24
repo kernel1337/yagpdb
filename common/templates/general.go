@@ -278,6 +278,8 @@ func CreateComplexMessage(values ...interface{}) (*discordgo.MessageSend, error)
 		AllowedMentions: discordgo.AllowedMentions{
 			Parse: []discordgo.AllowedMentionType{discordgo.AllowedMentionTypeUsers},
 		},
+		Components: []discordgo.TopLevelComponent{},
+		Embeds:     []*discordgo.MessageEmbed{},
 	}
 
 	// Default filename
@@ -293,7 +295,6 @@ func CreateComplexMessage(values ...interface{}) (*discordgo.MessageSend, error)
 				continue
 			}
 			v, _ := indirect(reflect.ValueOf(val))
-			msg.Embeds = make([]*discordgo.MessageEmbed, 0)
 			if v.Kind() == reflect.Slice {
 				const maxEmbeds = 10 // Discord limitation
 
